@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import MockAPISerializer
 from .models import MockAPI
+from backend.response import BadRequestExampleSerializer
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 import json
 
@@ -15,7 +16,10 @@ class MockDataCreateView(APIView):
     # POST mock data
     @extend_schema(
         request=MockAPISerializer,
-        responses={201: MockAPISerializer},
+        responses={
+            201: MockAPISerializer,
+            400: BadRequestExampleSerializer
+            },
         summary="Ceate a new mock data"
     )
     def post(self, request):
@@ -32,7 +36,10 @@ class MockDataCreateView(APIView):
         parameters=[
             OpenApiParameter(name='project_name', type=str, required=False, description='filter by project_name')
         ],
-        responses=MockAPISerializer(many=True),
+        responses={
+            200: MockAPISerializer(many=True),
+            400: BadRequestExampleSerializer
+            },
         summary="Query mock data by project_name"
     )
     def get(self, request):
